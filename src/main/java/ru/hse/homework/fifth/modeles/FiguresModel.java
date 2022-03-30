@@ -1,19 +1,7 @@
-package com.example.hw5;
+package ru.hse.homework.fifth.modeles;
 
-public record FigureModels() {
-    static int[][] fieldModel = {
-            {0, 0, 0, 0, 0, 0, 0, 0, 0},
-            {0, 0, 0, 0, 0, 0, 0, 0, 0},
-            {0, 0, 0, 0, 0, 0, 0, 0, 0},
-            {0, 0, 0, 0, 0, 0, 0, 0, 0},
-            {0, 0, 0, 0, 0, 0, 0, 0, 0},
-            {0, 0, 0, 0, 0, 0, 0, 0, 0},
-            {0, 0, 0, 0, 0, 0, 0, 0, 0},
-            {0, 0, 0, 0, 0, 0, 0, 0, 0},
-            {0, 0, 0, 0, 0, 0, 0, 0, 0},
-    };
-
-    static int[][][] figures = {
+public class FiguresModel {
+    public static int[][][] figures = {
             {
                     {0, 1, 1},
                     {0, 1, 0},

@@ -1,4 +1,4 @@
-package com.example.hw5;
+package ru.hse.homework.fifth;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -11,7 +11,8 @@ public class HelloApplication extends Application {
     @Override
     public void start(Stage stage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("tetris-view.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), 600, 400);
+        Scene scene = new Scene(fxmlLoader.load(), 620, 400);
+        stage.setResizable(false);
         stage.setTitle("HW5");
         stage.setScene(scene);
         stage.show();
