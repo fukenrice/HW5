@@ -1,13 +1,13 @@
+// Методы контроллера сделал публичными для того, что бы можно было провести тесты.
+
 package ru.hse.homework.fifth.controller;
 
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.Text;
-import javafx.stage.Stage;
 import javafx.util.Pair;
 import ru.hse.homework.fifth.modeles.*;
 import ru.hse.homework.fifth.modeles.FiguresModel;
@@ -28,7 +28,7 @@ public class AppController {
     private GridPane field;
 
     @FXML
-    public Text steps;
+    private Text steps;
 
     private Timer timer = new Timer();
 
@@ -43,8 +43,6 @@ public class AppController {
     private FieldModel fieldModel;
 
     private int numOfSteps;
-
-
 
     private final EventHandler<MouseEvent> mousePressed = mouseEvent -> {
         mouseAnchorX = mouseEvent.getX();
@@ -78,6 +76,9 @@ public class AppController {
         }
     };
 
+    /**
+     * Метод для отслеживания времени игры, запускающий таймер.
+     */
     void startTimer() {
         final int[] time = {-1};
         if (timerOn) {
@@ -97,27 +98,34 @@ public class AppController {
         timerOn = true;
     }
 
-
+    /**
+     * Метод для очистки поля с новой фигурой.
+     */
     void clearTemplate() {
-        for (int i = 0; i < fieldModel.FIELD_SIZE; i++) {
+        for (int i = 0; i < FieldModel.FIELD_SIZE; i++) {
             StackPane nd = (StackPane) (figureTemplate.getChildren().get(i));
             nd.setStyle("-fx-background-color: transparent");
         }
     }
 
-
-    int[][] getFigure() {
+    /**
+     * Метод возвращающий модель случайноый фигуры.
+     * @return Модель случайной фигуры.
+     */
+    public int[][] getFigure() {
         Random r = new Random();
         int index = r.nextInt(FiguresModel.figures.length);
         return FiguresModel.figures[index];
     }
 
-
+    /**
+     * Метод для отрисовки фигуры во вью.
+     */
     void drawFigure() {
         clearTemplate();
         currentFigure = getFigure();
-        for (int i = 0; i < fieldModel.TEMPLATE_SIZE; i++) {
-            for (int j = 0; j < fieldModel.TEMPLATE_SIZE; j++) {
+        for (int i = 0; i < FieldModel.TEMPLATE_SIZE; i++) {
+            for (int j = 0; j < FieldModel.TEMPLATE_SIZE; j++) {
                 StackPane nd = (StackPane) (figureTemplate.getChildren().get(i * 3 + j));
                 if (currentFigure[i][j] == 1) {
                     nd.setStyle("-fx-background-color:GREEN");
@@ -126,10 +134,15 @@ public class AppController {
         }
     }
 
-
+    /**
+     * Метод, возвращающий индекс ячейки по родительским координатам во вью.
+     * @param xCord x-координата.
+     * @param yCord y-координата.
+     * @return Индекс ячейки.
+     */
     private Pair<Integer, Integer> getCellIndexByCoordinates(double xCord, double yCord) {
-        for (int i = 0; i < fieldModel.FIELD_SIZE; i++) {
-            for (int j = 0; j < fieldModel.FIELD_SIZE; j++) {
+        for (int i = 0; i < FieldModel.FIELD_SIZE; i++) {
+            for (int j = 0; j < FieldModel.FIELD_SIZE; j++) {
                 double fx = field.getLayoutX();
                 double fy = field.getLayoutY();
                 if (field.getCellBounds(i, j).getMinX() + fx <= xCord && field.getCellBounds(i, j).getMaxX() + fx > xCord &&
@@ -141,10 +154,12 @@ public class AppController {
         return null;
     }
 
-
+    /**
+     * Метод, отрисовывающий поле по модели.
+     */
     void drawField() {
-        for (int i = 0; i < fieldModel.FIELD_SIZE; i++) {
-            for (int j = 0; j < fieldModel.FIELD_SIZE; j++) {
+        for (int i = 0; i < FieldModel.FIELD_SIZE; i++) {
+            for (int j = 0; j < FieldModel.FIELD_SIZE; j++) {
                 StackPane nd = (StackPane) (field.getChildren().get(i * 9 + j));
                 if (fieldModel.field[i][j] == 1) {
                     nd.setStyle("-fx-background-color:GREEN");
@@ -155,7 +170,13 @@ public class AppController {
         }
     }
 
-
+    /**
+     * Метод, проверяющий, содержит ли определенный ряд двумерного массива заданный элемент.
+     * @param arr двумерный моссив.
+     * @param value элемент.
+     * @param row ряд.
+     * @return содержит ли ряд элемент.
+     */
     public boolean rowContains(int[][] arr, int value, int row) {
         for (int i = 0; i < arr[row].length; i++) {
             if (arr[row][i] == value) {
@@ -165,8 +186,14 @@ public class AppController {
         return false;
     }
 
-
-    boolean colContains(int[][] arr, int value, int col) {
+    /**
+     * Метод, проверяющий, содержит ли определенный столбец двумерного массива заданный элемент.
+     * @param arr двумерный массив.
+     * @param value элемент.
+     * @param col столбец.
+     * @return содержит ли столбец элемент.
+     */
+    public boolean colContains(int[][] arr, int value, int col) {
         for (int[] ints : arr) {
             if (ints[col] == value) {
                 return true;
@@ -175,8 +202,14 @@ public class AppController {
         return false;
     }
 
-
-    boolean canPlaceFigure(Pair<Integer, Integer> coordsPlaced, int[][] figureTemplate, int[][] field) {
+    /**
+     * Метод, проверяющий, можно ли выставить фигуру на поле на заданную позицию(задается центром).
+     * @param coordsPlaced координаты, куда будет поставлен центр фигуры.
+     * @param figureTemplate модель фигры.
+     * @param field модель поля.
+     * @return можно ли поставить фигуру.
+     */
+    public boolean canPlaceFigure(Pair<Integer, Integer> coordsPlaced, int[][] figureTemplate, int[][] field) {
         // Если точка передана верно.
         if (coordsPlaced == null) {
             return false;
@@ -189,8 +222,8 @@ public class AppController {
             return false;
         }
         // Проверяем, помещается ли фигура вообще.
-        for (int i = 0; i < fieldModel.TEMPLATE_SIZE; i++) {
-            for (int j = 0; j < fieldModel.TEMPLATE_SIZE; j++) {
+        for (int i = 0; i < FieldModel.TEMPLATE_SIZE; i++) {
+            for (int j = 0; j < FieldModel.TEMPLATE_SIZE; j++) {
                 if (figureTemplate[i][j] == 1 && coordsPlaced.getValue() + i - 1 > 8 ||
                         figureTemplate[i][j] == 1 && coordsPlaced.getKey() + j - 1 > 8 ||
                         figureTemplate[i][j] == 1 && field[i + coordsPlaced.getValue() - 1][j + coordsPlaced.getKey() - 1] == 1) {
@@ -201,10 +234,15 @@ public class AppController {
         return true;
     }
 
-
-    void placeFigure(Pair<Integer, Integer> coordsPlaced, int[][] figureTemplate, int[][] field) {
-        for (int i = 0; i < fieldModel.TEMPLATE_SIZE; i++) {
-            for (int j = 0; j < fieldModel.TEMPLATE_SIZE; j++) {
+    /**
+     * Метод, выставляющий фигуру на поле.
+     * @param coordsPlaced координаты центра поставленной фигуры.
+     * @param figureTemplate модель фигурыю
+     * @param field модель поля.
+     */
+    public void placeFigure(Pair<Integer, Integer> coordsPlaced, int[][] figureTemplate, int[][] field) {
+        for (int i = 0; i < FieldModel.TEMPLATE_SIZE; i++) {
+            for (int j = 0; j < FieldModel.TEMPLATE_SIZE; j++) {
                 if (figureTemplate[i][j] == 1) {
                     field[i + coordsPlaced.getValue() - 1][j + coordsPlaced.getKey() - 1] = 1;
                 }
@@ -212,12 +250,17 @@ public class AppController {
         }
     }
 
-
+    /**
+     * Увелицить количество ходов и отрисовать.
+     */
     void incrementSteps() {
         numOfSteps++;
         steps.setText("Ходов: " + numOfSteps);
     }
 
+    /**
+     * Обработчик нажатия на кнопку "Стоп".
+     */
     @FXML
     protected void onStop() {
         if (timerOn) {
@@ -229,6 +272,9 @@ public class AppController {
         figureTemplate.setOnMouseReleased(null);
     }
 
+    /**
+     * Обработчик нажатия на кнопку "Начать новую игру".
+     */
     @FXML
     protected void onStart() {
         numOfSteps = 0;
@@ -240,5 +286,13 @@ public class AppController {
         figureTemplate.setOnMousePressed(mousePressed);
         figureTemplate.setOnMouseDragged(mouseDragged);
         figureTemplate.setOnMouseReleased(mouseReleased);
+    }
+
+    /**
+     * Обработчик нажатия на кнопку выхода.
+     */
+    @FXML
+    protected void onExit() {
+        System.exit(0);
     }
 }

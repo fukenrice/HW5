@@ -1,4 +1,4 @@
-module com.example.hw5 {
+module ru.hse.homework.fifth {
     requires javafx.controls;
     requires javafx.fxml;
 
